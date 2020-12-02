@@ -24,6 +24,7 @@ let package = Package(
             dependencies: ["DataStream", "WindowsDataTypes"]),
         .testTarget(
             name: "MetafileReaderTests",
-            dependencies: ["MetafileReader"]),
+            dependencies: ["MetafileReader"],
+            resources: [.process("Resources")]),
     ]
 )
