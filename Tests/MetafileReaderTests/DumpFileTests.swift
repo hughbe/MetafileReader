@@ -4,6 +4,7 @@ import XCTest
 final class DumpFileTests: XCTestCase {
     func testDumpWmf() throws {
         for (name, fileExtension) in [
+            ("dtformats_grid", "wmf"),
             ("libwmf_2doorvan", "wmf"),
             ("libwmf_anim0002", "wmf"),
             ("libwmf_ant", "wmf"),
@@ -31,6 +32,10 @@ final class DumpFileTests: XCTestCase {
             ("libreoffice_image1 (1)", "wmf"),
             ("libreoffice_image81", "wmf"),
             ("libreoffice_tdf104028_pg2_image", "wmf"),
+            ("libreoffice_ETO_PDY", "wmf"),
+            ("libreoffice_tdf39894", "wmf"),
+            ("libreoffice_visio_import_source", "wmf"),
+            ("libreoffice_OSS-Artwork-stackframe", "wmf")
             ("wmf2canvas_1", "wmf"),
             ("wmf2canvas_2", "wmf"),
             ("wmf2canvas_3", "wmf"),
@@ -117,6 +122,7 @@ final class DumpFileTests: XCTestCase {
             ("online_dT_dA_dT", "wmf"),
             ("online_poly_A", "wmf"),
             ("online_polydAdT", "wmf"),
+            ("runtime-assets_telescope_01", "wmf"),
         ] {
             let data = try getData(name: name, fileExtension: fileExtension)
             let file = try WmfFile(data: data)
