@@ -21,18 +21,18 @@ public struct META_EOF {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize == 3 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines the type of this record. For META_EOF, this value MUST be
         /// 0x0000, as specified in the RecordType Enumeration (section 2.1.1.1) table.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction == RecordType.META_EOF.rawValue else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

@@ -24,20 +24,20 @@ public struct META_POLYGON {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize >= 4 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_POLYGON.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_POLYGON.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// NumberOfPoints (2 bytes): A 16-bit signed integer that defines the number of points in the array.
         self.numberOfPoints = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize == 4 + 2 * self.numberOfPoints else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// aPoints (variable): A NumberOfPoints array of 32-bit PointS Objects (section 2.2.2.16), in logical units.
@@ -50,7 +50,7 @@ public struct META_POLYGON {
         self.aPoints = aPoints
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

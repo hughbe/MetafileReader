@@ -23,7 +23,7 @@ public struct META_SETROP2 {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize == 4 || recordSize == 5 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -32,7 +32,7 @@ public struct META_SETROP2 {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_SETROP2.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_SETROP2.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// DrawMode (2 bytes): A 16-bit unsigned integer that defines the foreground binary raster operation mixing mode. This MUST be one
@@ -48,7 +48,7 @@ public struct META_SETROP2 {
         self.reserved = try dataStream.read(endianess: .littleEndian)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

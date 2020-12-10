@@ -30,7 +30,7 @@ public struct BitmapInfoHeader {
         /// This field SHOULD specify the width of the decompressed image file, if the Compression value specifies JPEG or PNG format.<44>
         self.width = try dataStream.read(endianess: .littleEndian)
         guard self.width > 0 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Height (4 bytes): A 32-bit signed integer that defines the height of the DIB, in pixels. This value MUST NOT be zero.
@@ -43,19 +43,19 @@ public struct BitmapInfoHeader {
         /// the upper-left corner. Top-down bitmaps do not support compression.
         self.height = try dataStream.read(endianess: .littleEndian)
         guard self.height != 0x00000000 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Planes (2 bytes): A 16-bit unsigned integer that defines the number of planes for the target device. This value MUST be 0x0001.
         self.planes = try dataStream.read(endianess: .littleEndian)
         guard self.planes == 0x0001 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// BitCount (2 bytes): A 16-bit unsigned integer that defines the number of bits that define each pixel and the maximum number of
         /// colors in the DIB. This value MUST be in the BitCount Enumeration (section 2.1.1.3).
         guard let bitCount = BitCount(rawValue: try dataStream.read(endianess: .littleEndian)) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.bitCount = bitCount
@@ -64,7 +64,7 @@ public struct BitmapInfoHeader {
         /// Compression Enumeration (section 2.1.1.7). This value MUST NOT specify a compressed format if the DIB is a top-down bitmap,
         /// as indicated by the Height value.
         guard let compression = Compression(rawValue: UInt16(try dataStream.read(endianess: .littleEndian) as UInt32)) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.compression = compression

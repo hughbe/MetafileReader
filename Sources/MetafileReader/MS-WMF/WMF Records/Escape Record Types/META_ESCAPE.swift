@@ -26,20 +26,20 @@ public struct META_ESCAPE {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize >= 3 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_ESCAPE.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_ESCAPE.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         func readString(recordSize: UInt32) throws -> String {
             let string = try dataStream.readString(count: Int(recordSize * 2) - 6, encoding: .ascii)!.trimmingCharacters(in: ["\0"])
             guard (dataStream.position - startPosition) / 2 == recordSize else {
-                throw MetafileReadError.corrupted
+                throw WmfReadError.corrupted
             }
             
             return string
@@ -71,7 +71,7 @@ public struct META_ESCAPE {
         self.data = .escape(try META_ESCAPEDATA(dataStream: &dataStream, recordSize: self.recordSize))
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
     
@@ -93,7 +93,7 @@ public struct META_ESCAPE {
             /// ByteCount (2 bytes): A 16-bit unsigned integer that specifies the size, in bytes, of the EscapeData field.
             self.byteCount = try dataStream.read(endianess: .littleEndian)
             guard recordSize == 5 + self.byteCount / 2 else {
-                throw MetafileReadError.corrupted
+                throw WmfReadError.corrupted
             }
             
             /// EscapeData (variable): An array of bytes of size ByteCount.

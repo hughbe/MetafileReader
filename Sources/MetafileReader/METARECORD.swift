@@ -87,7 +87,7 @@ public enum METARECORD {
         guard recordSize >= 0 &&
                 recordSize < UInt32.max / 2 &&
                 recordSize * 2 <= remainingCount else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         let recordFunction: UInt16 = try dataStream.read(endianess: .littleEndian)

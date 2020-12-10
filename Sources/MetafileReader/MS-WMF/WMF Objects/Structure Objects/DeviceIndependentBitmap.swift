@@ -30,7 +30,7 @@ public struct DeviceIndependentBitmap {
         }
         
         guard dataStream.position - startPosition == self.dibHeaderInfo.headerSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Colors (variable): An optional array of either RGBQuad Objects (section 2.2.2.20) or 16-bit unsigned integers that define a color table.

@@ -25,7 +25,7 @@ public struct GET_COLORTABLE {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize >= 6 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -34,20 +34,20 @@ public struct GET_COLORTABLE {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_ESCAPE.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_ESCAPE.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// EscapeFunction (2 bytes): A 16-bit unsigned integer that defines the escape function. The value MUST be 0x0005
         /// (GET_COLORTABLE) from the MetafileEscapes Enumeration (section 2.1.1.17) table.
         self.escapeFunction = try MetafileEscapes(dataStream: &dataStream)
         guard self.escapeFunction == .GETCOLORTABLE else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// ByteCount (2 bytes): A 16-bit unsigned integer that specifies the size, in bytes, of the record data that follows.
         let byteCount: UInt16 = try dataStream.read(endianess: .littleEndian)
         guard byteCount >= 2 && recordSize == 5 + byteCount / 2 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.byteCount = byteCount
@@ -64,7 +64,7 @@ public struct GET_COLORTABLE {
         self.colorTableBuffer = try dataStream.readBytes(count: Int(self.byteCount) - 2)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

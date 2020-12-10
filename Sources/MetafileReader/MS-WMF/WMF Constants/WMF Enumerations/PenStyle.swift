@@ -41,19 +41,19 @@ public struct PenStyle {
     
     public init(rawValue: UInt16) throws {
         guard let style = Style(rawValue: rawValue & 0x000F) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.style = style
         
         guard let endCap = EndCap(rawValue: rawValue & 0x0F00) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.endCap = endCap
         
         guard let join = Join(rawValue: rawValue & 0xF000) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.join = join

@@ -20,7 +20,7 @@ public struct PitchAndFamily {
         /// Family (4 bits): A property of a font that describes its general appearance. This MUST be a value in the FamilyFont Enumeration
         /// (section 2.1.1.8).
         guard let family = FamilyFont(rawValue: flags.readBits(count: 4)) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.family = family
@@ -30,7 +30,7 @@ public struct PitchAndFamily {
         /// Pitch (2 bits): A property of a font that describes the pitch, of the characters. This MUST be a value in the PitchFont Enumeration
         /// (section 2.1.1.24).
         guard let pitch = PitchFont(rawValue: flags.readBits(count: 2)) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.pitch = pitch

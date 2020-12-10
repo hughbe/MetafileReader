@@ -111,7 +111,7 @@ public struct Font {
         let remainingCount = recordSize - UInt32(dataStream.position - startPosition) / 2
         
         guard let s = try dataStream.readString(count: Int(remainingCount) * 2, encoding: .isoLatin1) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
 
         if let index = s.firstIndex(of: "\0") {

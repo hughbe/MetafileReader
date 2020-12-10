@@ -20,7 +20,7 @@ public struct Palette {
         /// type, it MUST be 0x0300.
         self.start = try dataStream.read(endianess: .littleEndian)
         guard self.start == 0x0300 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// NumberOfEntries (2 bytes): A 16-bit unsigned integer that defines the number of objects in aPaletteEntries.

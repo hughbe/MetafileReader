@@ -24,7 +24,7 @@ public struct META_CREATEPATTERNBRUSH {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize >= 19 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -33,7 +33,7 @@ public struct META_CREATEPATTERNBRUSH {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_CREATEPATTERNBRUSH.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_CREATEPATTERNBRUSH.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Bitmap16 (14 bytes): A partial Bitmap16 Object (section 2.2.2.1), which defines parameters for the bitmap that specifies the
@@ -53,7 +53,7 @@ public struct META_CREATEPATTERNBRUSH {
         self.pattern = try dataStream.readBytes(count: count)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 
@@ -84,7 +84,7 @@ public struct META_CREATEPATTERNBRUSH {
             /// Planes (1 byte): An 8-bit unsigned integer that defines the number of color planes in the bitmap. The value of this field MUST be 0x01.
             self.planes = try dataStream.read()
             guard self.planes == 0x01 else {
-                throw MetafileReadError.corrupted
+                throw WmfReadError.corrupted
             }
             
             /// BitsPixel (1 byte): An 8-bit unsigned integer that defines the number of adjacent color bits on each plane.

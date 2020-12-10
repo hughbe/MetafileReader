@@ -22,7 +22,7 @@ public struct META_CREATEPALETTE {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize >= 5 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -31,7 +31,7 @@ public struct META_CREATEPALETTE {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_CREATEPALETTE.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_CREATEPALETTE.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Palette (variable): Palette Object data that defines the palette to create. The Start field in the Palette Object MUST be set
@@ -39,7 +39,7 @@ public struct META_CREATEPALETTE {
         self.palette = try Palette(dataStream: &dataStream)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

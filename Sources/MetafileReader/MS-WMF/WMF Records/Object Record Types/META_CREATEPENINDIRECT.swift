@@ -22,7 +22,7 @@ public struct META_CREATEPENINDIRECT {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize == 8 || recordSize == 9 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -31,7 +31,7 @@ public struct META_CREATEPENINDIRECT {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_CREATEPENINDIRECT.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_CREATEPENINDIRECT.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Pen (10 bytes): Pen Object data that defines the pen to create.
@@ -42,7 +42,7 @@ public struct META_CREATEPENINDIRECT {
         }
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

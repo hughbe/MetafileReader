@@ -36,7 +36,7 @@ public struct Bitmap16 {
         /// Planes (1 byte): An 8-bit unsigned integer that defines the number of color planes in the bitmap. The value of this field MUST be 0x01.
         self.planes = try dataStream.read()
         guard self.planes == 0x01 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// BitsPixel (1 byte): An 8-bit unsigned integer that defines the number of adjacent color bits on each plane.
@@ -47,7 +47,7 @@ public struct Bitmap16 {
         if excessBytes > 0 {
             let remainingCount = 4 - excessBytes
             guard dataStream.position + remainingCount <= dataStream.count else {
-                throw MetafileReadError.corrupted
+                throw WmfReadError.corrupted
             }
             
             dataStream.position += remainingCount

@@ -34,42 +34,42 @@ public struct META_ESCAPE_ENHANCED_METAFILE {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize >= 22 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_ESCAPE.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_ESCAPE.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// EscapeFunction (2 bytes): A 16-bit unsigned integer that defines the escape function. The value MUST be 0x000F
         /// (META_ESCAPE_ENHANCED_METAFILE) from the MetafileEscapes Enumeration (section 2.1.1.17) table.
         self.escapeFunction = try MetafileEscapes(dataStream: &dataStream)
         guard self.escapeFunction == .META_ESCAPE_ENHANCED_METAFILE else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// ByteCount (2 bytes): A 16-bit unsigned integer that specifies the size, in bytes, of the record data that follows. This value
         /// MUST be 34 plus the value of the EnhancedMetafileDataSize field.
         self.byteCount = try dataStream.read(endianess: .littleEndian)
         guard self.byteCount >= 34 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// CommentIdentifier (4 bytes): A 32-bit unsigned integer that defines this record as a WMF Comment record. This value
         /// MUST be 0x43464D57.
         self.commentIdentifier = try dataStream.read(endianess: .littleEndian)
         guard self.commentIdentifier == 0x43464D57 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// CommentType (4 bytes): A 32-bit unsigned integer that identifies the type of comment in this record. This value MUST
         /// be 0x00000001.
         self.commentType = try dataStream.read(endianess: .littleEndian)
         guard self.commentType == 0x00000001 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Version (4 bytes): A 32-bit unsigned integer that specifies EMF metafile interoperability. This SHOULD be 0x00010000.<66>
@@ -83,21 +83,21 @@ public struct META_ESCAPE_ENHANCED_METAFILE {
         /// Flags (4 bytes): This 32-bit unsigned integer is unused and MUST be set to zero.
         self.flags = try dataStream.read(endianess: .littleEndian)
         guard self.flags == 0 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// CommentRecordCount (4 bytes): A 32-bit unsigned integer that specifies the total number of consecutive
         /// META_ESCAPE_ENHANCED_METAFILE records that contain the embedded EMF metafile.
         self.commentRecordCount = try dataStream.read(endianess: .littleEndian)
         guard self.commentRecordCount > 0 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// CurrentRecordSize (4 bytes): A 32-bit unsigned integer that specifies the size, in bytes, of the EnhancedMetafileData field.
         /// This value MUST be less than or equal to 8,192.
         self.currentRecordSize = try dataStream.read(endianess: .littleEndian)
         guard self.currentRecordSize <= 8192 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RemainingBytes (4 bytes): A 32-bit unsigned integer that specifies the number of bytes in the EMF stream that remain to
@@ -109,10 +109,10 @@ public struct META_ESCAPE_ENHANCED_METAFILE {
         /// in this sequence of META_ESCAPE_ENHANCED_METAFILE records.
         self.enhancedMetafileDataSize = try dataStream.read(endianess: .littleEndian)
         guard self.byteCount == 34 + self.enhancedMetafileDataSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         guard self.recordSize == 22 + self.enhancedMetafileDataSize / 2 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
 
         /// EnhancedMetafileData (variable): A segment of an EMF file. The bytes in consecutive
@@ -120,7 +120,7 @@ public struct META_ESCAPE_ENHANCED_METAFILE {
         self.enhancedMetafileData = try dataStream.readBytes(count: Int(self.enhancedMetafileDataSize))
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

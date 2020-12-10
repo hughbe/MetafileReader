@@ -25,7 +25,7 @@ public struct META_PLACEABLE {
         /// Key (4 bytes): Identification value that indicates the presence of a placeable metafile header. This value MUST be 0x9AC6CDD7.
         self.key = try dataStream.read(endianess: .littleEndian)
         guard self.key == 0x9AC6CDD7 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// HWmf (2 bytes): The resource handle to the metafile, when the metafile is in memory. When the metafile is on disk, this field MUST
@@ -45,7 +45,7 @@ public struct META_PLACEABLE {
         /// Reserved (4 bytes): A field that is not used and MUST be set to 0x00000000.
         self.reserved = try dataStream.read(endianess: .littleEndian)
         guard self.reserved == 0x00000000 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Checksum (2 bytes): A checksum for the previous 10 16-bit values in the header. This value can be used to determine whether the
@@ -63,7 +63,7 @@ public struct META_PLACEABLE {
             UInt16((self.reserved & 0xFFFF)) ^
             UInt16(((self.reserved >> 16) & 0xFFFF))
         guard self.checksum == calculatedChecksum else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

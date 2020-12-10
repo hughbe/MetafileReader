@@ -29,14 +29,14 @@ public struct BitmapCoreHeader {
         /// Planes (2 bytes): A 16-bit unsigned integer that defines the number of planes for the target device. This value MUST be 0x0001.
         self.planes = try dataStream.read(endianess: .littleEndian)
         guard self.planes == 0x0001 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// BitCount (2 bytes): A 16-bit unsigned integer that defines the format of each pixel, and the maximum number of colors in the DIB.
         /// This value MUST be in the BitCount Enumeration (section 2.1.1.3).
         /// A DIB is specified by a DeviceIndependentBitmap Object (section 2.2.2.9).
         guard let bitCount = BitCount(rawValue: try dataStream.read(endianess: .littleEndian)) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.bitCount = bitCount

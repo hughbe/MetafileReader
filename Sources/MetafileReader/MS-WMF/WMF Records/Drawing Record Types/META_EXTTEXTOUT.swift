@@ -29,14 +29,14 @@ public struct META_EXTTEXTOUT {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize >= 7 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_EXTTEXTOUT.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_EXTTEXTOUT.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Y (2 bytes): A 16-bit signed integer that defines the y-coordinate, in logical units, where the text string is to be located.
@@ -49,7 +49,7 @@ public struct META_EXTTEXTOUT {
         self.stringLength = try dataStream.read(endianess: .littleEndian)
         let minExpectedSize = 7 + Int(ceil(Double(stringLength) / 2))
         guard self.recordSize >= minExpectedSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// fwOpts (2 bytes): A 16-bit unsigned integer that defines the use of the application-defined rectangle. This member can be a
@@ -60,7 +60,7 @@ public struct META_EXTTEXTOUT {
         let shouldHaveRectangle = fwOpts.contains(.clipped) || fwOpts.contains(.opaque)
         let expectedSize = minExpectedSize + (shouldHaveRectangle ? 4 : 0)
         guard self.recordSize >= expectedSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
 
         /// Rectangle (8 bytes): An optional 8-byte Rect Object (section 2.2.2.18) that defines the dimensions, in logical coordinates, of a
@@ -112,7 +112,7 @@ public struct META_EXTTEXTOUT {
         }
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-             throw MetafileReadError.corrupted
+             throw WmfReadError.corrupted
         }
     }
 }

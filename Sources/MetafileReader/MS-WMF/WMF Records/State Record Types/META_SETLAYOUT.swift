@@ -24,7 +24,7 @@ public struct META_SETLAYOUT {
         /// section 2.2.61, in the record.
         let recordSize: UInt32 = try dataStream.read(endianess: .littleEndian)
         guard recordSize == 4 || recordSize == 5 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         self.recordSize = recordSize
@@ -33,7 +33,7 @@ public struct META_SETLAYOUT {
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_SETLAYOUT.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_SETLAYOUT.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Layout (2 bytes): A 16-bit unsigned integer that defines the layout of text and graphics. This MUST be one of the values
@@ -49,7 +49,7 @@ public struct META_SETLAYOUT {
         self.reserved = try dataStream.read(endianess: .littleEndian)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

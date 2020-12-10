@@ -26,7 +26,7 @@ public struct Region {
         /// ObjectType (2 bytes): A 16-bit signed integer that specifies the region identifier. It MUST be 0x0006.
         self.objectType = try dataStream.read(endianess: .littleEndian)
         guard self.objectType == 0x0006 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// ObjectCount (4 bytes): A value that MUST be ignored.<42>

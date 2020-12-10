@@ -24,21 +24,26 @@ public struct LogColorSpaceW {
     public let filename: String
     
     public init(dataStream: inout DataStream) throws {
+        let startPosition = dataStream.position
+
         /// Signature (4 bytes): A 32-bit unsigned integer that specifies the signature of color space objects; it MUST be set to the
         /// value 0x50534F43, which is the ASCII encoding of the string "PSOC".
         self.signature = try dataStream.read(endianess: .littleEndian)
         guard self.signature == 0x50534F43 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Version (4 bytes): A 32-bit unsigned integer that defines a version number; it MUST be 0x00000400.
         self.version = try dataStream.read(endianess: .littleEndian)
         guard self.version == 0x00000400 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Size (4 bytes): A 32-bit unsigned integer that defines the size of this object, in bytes.
         self.size = try dataStream.read(endianess: .littleEndian)
+        guard self.size == 0x0000024C else {
+            throw WmfReadError.corrupted
+        }
         
         /// ColorSpaceType (4 bytes): A 32-bit signed integer that specifies the color space type. It MUST be defined in the
         /// LogicalColorSpace Enumeration (section 2.1.1.14). If this value is LCS_sRGB or LCS_WINDOWS_COLOR_SPACE, the
@@ -69,6 +74,10 @@ public struct LogColorSpaceW {
         /// Filename (variable): An optional, null-terminated Unicode UTF16-LE character string, which specifies the name of a file
         /// that contains a color profile. If a file name is specified, and the ColorSpaceType field is set to LCS_CALIBRATED_RGB,
         /// the other fields of this structure SHOULD be ignored.
-        self.filename = try dataStream.readUnicodeString()!
+        self.filename = try dataStream.readString(count: 520, encoding: .utf16LittleEndian)!.trimmingCharacters(in: ["\0"])
+        
+        guard dataStream.position - startPosition == self.size else {
+            throw WmfReadError.corrupted
+        }
     }
 }

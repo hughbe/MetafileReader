@@ -21,7 +21,7 @@ public struct Scan {
         /// array. This value MUST be a multiple of 2, since left and right endpoints are required to specify each scanline.
         self.count = try dataStream.read(endianess: .littleEndian)
         guard (self.count % 2) == 0 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Top (2 bytes): A 16-bit unsigned integer that defines the vertical (y-axis) coordinate, in logical units, of the top scanline.

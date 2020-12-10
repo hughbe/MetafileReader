@@ -27,28 +27,28 @@ public struct DRAW_PATTERNRECT {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize == 15 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_ESCAPE.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_ESCAPE.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// EscapeFunction (2 bytes): A 16-bit unsigned integer that defines the escape function. The value MUST be 0x0019
         /// (DRAW_PATTERNRECT) from the MetafileEscapes Enumeration (section 2.1.1.17) table.
         self.escapeFunction = try MetafileEscapes(dataStream: &dataStream)
         guard self.escapeFunction == .DRAWPATTERNRECT else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// ByteCount (2 bytes): A 16-bit unsigned integer that specifies the size, in bytes, of the record data that follows.
         /// This MUST be 0x0014.
         self.byteCount = try dataStream.read(endianess: .littleEndian)
         guard self.byteCount == 0x0014 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Position (8 bytes): A PointL Object (section 2.2.2.15) that defines the position of the rectangle.
@@ -64,7 +64,7 @@ public struct DRAW_PATTERNRECT {
         self.pattern = try dataStream.read(endianess: .littleEndian)
         
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }

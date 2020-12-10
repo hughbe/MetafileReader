@@ -18,7 +18,7 @@ public struct PolyPolygon {
         /// NumberOfPolygons (2 bytes): A 16-bit unsigned integer that defines the number of polygons in the object.
         self.numberOfPolygons = try dataStream.read(endianess: .littleEndian)
         guard recordSize >= 4 + self.numberOfPolygons else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// aPointsPerPolygon (variable): A NumberOfPolygons array of 16-bit unsigned integers that define the number of points for each
@@ -35,7 +35,7 @@ public struct PolyPolygon {
         self.aPointsPerPolygon = aPointsPerPolygon
         
         guard recordSize == 4 + UInt32(self.numberOfPolygons) + 2 * UInt32(numberOfPolygonPoints) else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// aPoints (variable): An array of 16-bit unsigned integers that define the coordinates of the polygons.

@@ -29,7 +29,7 @@ public struct META_HEADER {
         /// section 2.2.61, in the header.
         self.headerSize = try dataStream.read(endianess: .littleEndian)
         guard self.headerSize == 9 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// Version (2 bytes): A 16-bit unsigned integer that defines the metafile version. It MUST be a value in the MetafileVersion Enumeration

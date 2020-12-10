@@ -23,14 +23,14 @@ public struct META_RESTOREDC {
         /// section 2.2.61, in the record.
         self.recordSize = try dataStream.read(endianess: .littleEndian)
         guard self.recordSize == 4 else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// RecordFunction (2 bytes): A 16-bit unsigned integer that defines this WMF record type. The lower byte MUST match the lower byte
         /// of the RecordType Enumeration (section 2.1.1.1) table value META_RESTOREDC.
         self.recordFunction = try dataStream.read(endianess: .littleEndian)
         guard self.recordFunction & 0xFF == RecordType.META_RESTOREDC.rawValue & 0xFF else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
         
         /// nSavedDC (2 bytes): A 16-bit signed integer that defines the saved state to be restored. If this member is positive, nSavedDC
@@ -39,7 +39,7 @@ public struct META_RESTOREDC {
         self.nSavedDC = try dataStream.read(endianess: .littleEndian)
 
         guard (dataStream.position - startPosition) / 2 == self.recordSize else {
-            throw MetafileReadError.corrupted
+            throw WmfReadError.corrupted
         }
     }
 }
