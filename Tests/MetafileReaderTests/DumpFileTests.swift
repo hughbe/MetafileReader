@@ -4,6 +4,15 @@ import XCTest
 final class DumpFileTests: XCTestCase {
     func testDumpWmf() throws {
         for (name, fileExtension) in [
+            ("CreateWMFMetaFileImage", "wmf"),
+            ("File", "wmf"),
+            ("input", "wmf"),
+            ("missing-font", "wmf"),
+            ("SmoothingTest", "wmf"),
+            ("TextHintTest", "wmf"),
+            ("test", "wmf"),
+            ("thistlegirl_wmfsample", "wmf"),
+            ("WMF sample", "wmf"),
             ("dtformats_grid", "wmf"),
             ("libwmf_2doorvan", "wmf"),
             ("libwmf_anim0002", "wmf"),
@@ -35,7 +44,7 @@ final class DumpFileTests: XCTestCase {
             ("libreoffice_ETO_PDY", "wmf"),
             ("libreoffice_tdf39894", "wmf"),
             ("libreoffice_visio_import_source", "wmf"),
-            ("libreoffice_OSS-Artwork-stackframe", "wmf")
+            ("libreoffice_OSS-Artwork-stackframe", "wmf"),
             ("wmf2canvas_1", "wmf"),
             ("wmf2canvas_2", "wmf"),
             ("wmf2canvas_3", "wmf"),
