@@ -53,10 +53,10 @@ public struct WmfFile {
         self.data = DataStream(slicing: dataStream, startIndex: dataStream.position, count: dataStream.remainingCount)
     }
     
-    public func enumerateRecords(proc: (METARECORD) -> MetafileEnumerationStatus) throws {
+    public func enumerateRecords(proc: (WmfRecord) -> MetafileEnumerationStatus) throws {
         var dataStream = self.data
         while dataStream.position < dataStream.count {
-            let record = try METARECORD(dataStream: &dataStream)
+            let record = try WmfRecord(dataStream: &dataStream)
             if case .eof = record {
                 break
             }

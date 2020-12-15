@@ -21,6 +21,8 @@ public struct META_HEADER {
     public let numberOfMembers: UInt16
     
     public init(dataStream: inout DataStream) throws {
+        let startPosition = dataStream.position
+        
         /// Type (2 bytes): A 16-bit unsigned integer that defines the type of metafile. It MUST be a value in the MetafileType Enumeration
         /// (section 2.1.1.18).
         self.type = try MetafileType(dataStream: &dataStream)
@@ -53,5 +55,9 @@ public struct META_HEADER {
         
         /// NumberOfMembers (2 bytes): A 16-bit unsigned integer that is not used. It SHOULD be 0x0000.
         self.numberOfMembers = try dataStream.read(endianess: .littleEndian)
+        
+        guard (dataStream.position - startPosition) / 2 == self.headerSize else {
+            throw WmfReadError.corrupted
+        }
     }
 }

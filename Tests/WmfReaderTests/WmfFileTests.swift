@@ -1,7 +1,7 @@
-@testable import MetafileReader
+@testable import WmfReader
 import XCTest
 
-final class MetafileTests: XCTestCase {
+final class WmfFileTests: XCTestCase {
     func testExample() throws {
         do {
             let data = try getData(name: "online_sample", fileExtension: "wmf")

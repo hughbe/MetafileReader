@@ -1,5 +1,5 @@
 import XCTest
-@testable import MetafileReader
+@testable import WmfReader
 
 final class DumpFileTests: XCTestCase {
     func testDumpWmf() throws {
@@ -147,7 +147,7 @@ final class DumpFileTests: XCTestCase {
                 } else {
                     //print(record)
                 }
-                
+
                 return .continue
             }
         }

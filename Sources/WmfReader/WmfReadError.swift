@@ -1,6 +1,6 @@
 //
-//  MetafileReadError.swift
-//  
+//  WmfReaderror.swift
+//
 //
 //  Created by Hugh Bellamy on 25/11/2020.
 //

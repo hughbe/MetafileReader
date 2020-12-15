@@ -1,5 +1,5 @@
 //
-//  METARECORD.swift
+//  WmfRecord.swift
 //  
 //
 //  Created by Hugh Bellamy on 30/11/2020.
@@ -7,7 +7,7 @@
 
 import DataStream
 
-public enum METARECORD {
+public enum WmfRecord {
     case eof(_: META_EOF)
     case saveDC(_: META_SAVEDC)
     case realizePalette(_: META_REALIZEPALETTE)
@@ -90,152 +90,150 @@ public enum METARECORD {
             throw WmfReadError.corrupted
         }
         
-        let recordFunction: UInt16 = try dataStream.read(endianess: .littleEndian)
+        let recordFunction = try RecordType(dataStream: &dataStream)
         dataStream.position = position
         
         switch recordFunction {
-        case RecordType.META_SAVEDC.rawValue: // 0x001E
+        case RecordType.META_SAVEDC: // 0x001E
             self = .saveDC(try META_SAVEDC(dataStream: &dataStream))
-        case RecordType.META_REALIZEPALETTE.rawValue: // 0x0035
+        case RecordType.META_REALIZEPALETTE: // 0x0035
             self = .realizePalette(try META_REALIZEPALETTE(dataStream: &dataStream))
-        case RecordType.META_SETPALENTRIES.rawValue: // 0x0037
+        case RecordType.META_SETPALENTRIES: // 0x0037
             self = .setPalEntries(try META_SETPALENTRIES(dataStream: &dataStream))
-        case RecordType.META_CREATEPALETTE.rawValue: // 0x00F7
+        case RecordType.META_CREATEPALETTE: // 0x00F7
             self = .createPalette(try META_CREATEPALETTE(dataStream: &dataStream))
-        case RecordType.META_SETBKMODE.rawValue: // 0x0102
+        case RecordType.META_SETBKMODE: // 0x0102
             self = .setBkMode(try META_SETBKMODE(dataStream: &dataStream))
-        case RecordType.META_SETMAPMODE.rawValue: // 0x0103
+        case RecordType.META_SETMAPMODE: // 0x0103
             self = .setMapMode(try META_SETMAPMODE(dataStream: &dataStream))
-        case RecordType.META_SETROP2.rawValue: // 0x0104
+        case RecordType.META_SETROP2: // 0x0104
             self = .setRop2(try META_SETROP2(dataStream: &dataStream))
-        case RecordType.META_SETRELABS.rawValue: // 0x0105
+        case RecordType.META_SETRELABS: // 0x0105
             self = .setRelabs(try META_SETRELABS(dataStream: &dataStream))
-        case RecordType.META_SETPOLYFILLMODE.rawValue: // 0x0106
+        case RecordType.META_SETPOLYFILLMODE: // 0x0106
             self = .setPolyFillMode(try META_SETPOLYFILLMODE(dataStream: &dataStream))
-        case RecordType.META_SETSTRETCHBLTMODE.rawValue: // 0x0107
+        case RecordType.META_SETSTRETCHBLTMODE: // 0x0107
             self = .setStretchBltMode(try META_SETSTRETCHBLTMODE(dataStream: &dataStream))
-        case RecordType.META_SETTEXTCHAREXTRA.rawValue: // 0x0108
+        case RecordType.META_SETTEXTCHAREXTRA: // 0x0108
             self = .setTextCharExtra(try META_SETTEXTCHAREXTRA(dataStream: &dataStream))
-        case RecordType.META_RESTOREDC.rawValue: // 0x0127
+        case RecordType.META_RESTOREDC: // 0x0127
             self = .restoreDC(try META_RESTOREDC(dataStream: &dataStream))
-        case RecordType.META_INVERTREGION.rawValue: // 0x012A
+        case RecordType.META_INVERTREGION: // 0x012A
             self = .invertRegion(try META_INVERTREGION(dataStream: &dataStream))
-        case RecordType.META_PAINTREGION.rawValue: // 0x012B
+        case RecordType.META_PAINTREGION: // 0x012B
             self = .paintRegion(try META_PAINTREGION(dataStream: &dataStream))
-        case RecordType.META_SELECTCLIPREGION.rawValue: // 0x012C
+        case RecordType.META_SELECTCLIPREGION: // 0x012C
             self = .selectClipRegion(try META_SELECTCLIPREGION(dataStream: &dataStream))
-        case RecordType.META_SELECTOBJECT.rawValue: // 0x012D
+        case RecordType.META_SELECTOBJECT: // 0x012D
             self = .selectObject(try META_SELECTOBJECT(dataStream: &dataStream))
-        case RecordType.META_SETTEXTALIGN.rawValue: // 0x012E
+        case RecordType.META_SETTEXTALIGN: // 0x012E
             self = .textAlign(try META_SETTEXTALIGN(dataStream: &dataStream))
-        case RecordType.META_RESIZEPALETTE.rawValue: // 0x0139
+        case RecordType.META_RESIZEPALETTE: // 0x0139
             self = .resizePalette(try META_RESIZEPALETTE(dataStream: &dataStream))
-        case RecordType.META_DIBCREATEPATTERNBRUSH.rawValue: // 0x0142
+        case RecordType.META_DIBCREATEPATTERNBRUSH: // 0x0142
             self = .dibCreatePatternBrush(try META_DIBCREATEPATTERNBRUSH(dataStream: &dataStream))
-        case RecordType.META_SETLAYOUT.rawValue: // 0x0149
+        case RecordType.META_SETLAYOUT: // 0x0149
             self = .setLayout(try META_SETLAYOUT(dataStream: &dataStream))
-        case RecordType.META_DELETEOBJECT.rawValue: // 0x01F0
+        case RecordType.META_DELETEOBJECT: // 0x01F0
             self = .deleteObject(try META_DELETEOBJECT(dataStream: &dataStream))
-        case RecordType.META_CREATEPATTERNBRUSH.rawValue: // 0x01F9
+        case RecordType.META_CREATEPATTERNBRUSH: // 0x01F9
             self = .createPatternBrush(try META_CREATEPATTERNBRUSH(dataStream: &dataStream))
-        case RecordType.META_SETBKCOLOR.rawValue: // 0x0201
+        case RecordType.META_SETBKCOLOR: // 0x0201
             self = .setBkColor(try META_SETBKCOLOR(dataStream: &dataStream))
-        case RecordType.META_SETTEXTCOLOR.rawValue: // 0x0209
+        case RecordType.META_SETTEXTCOLOR: // 0x0209
             self = .setTextColor(try META_SETTEXTCOLOR(dataStream: &dataStream))
-        case RecordType.META_SETTEXTJUSTIFICATION.rawValue: // 0x020A
+        case RecordType.META_SETTEXTJUSTIFICATION: // 0x020A
             self = .setTextJustification(try META_SETTEXTJUSTIFICATION(dataStream: &dataStream))
-        case RecordType.META_SETWINDOWORG.rawValue: // 0x020B
+        case RecordType.META_SETWINDOWORG: // 0x020B
             self = .setWindowOrg(try META_SETWINDOWORG(dataStream: &dataStream))
-        case RecordType.META_SETWINDOWEXT.rawValue: // 0x020C
+        case RecordType.META_SETWINDOWEXT: // 0x020C
             self = .setWindowExt(try META_SETWINDOWEXT(dataStream: &dataStream))
-        case RecordType.META_SETVIEWPORTORG.rawValue: // 0x020D
+        case RecordType.META_SETVIEWPORTORG: // 0x020D
             self = .setViewportOrg(try META_SETVIEWPORTORG(dataStream: &dataStream))
-        case RecordType.META_SETVIEWPORTEXT.rawValue: // 0x020E
+        case RecordType.META_SETVIEWPORTEXT: // 0x020E
             self = .setViewportExt(try META_SETVIEWPORTEXT(dataStream: &dataStream))
-        case RecordType.META_OFFSETWINDOWORG.rawValue: // 0x020F
+        case RecordType.META_OFFSETWINDOWORG: // 0x020F
             self = .offsetWindowOrg(try META_OFFSETWINDOWORG(dataStream: &dataStream))
-        case RecordType.META_OFFSETVIEWPORTORG.rawValue: // 0x0211
+        case RecordType.META_OFFSETVIEWPORTORG: // 0x0211
             self = .offsetViewportOrg(try META_OFFSETVIEWPORTORG(dataStream: &dataStream))
-        case RecordType.META_LINETO.rawValue: // 0x0213
+        case RecordType.META_LINETO: // 0x0213
             self = .lineTo(try META_LINETO(dataStream: &dataStream))
-        case RecordType.META_MOVETO.rawValue: // 0x0214
+        case RecordType.META_MOVETO: // 0x0214
             self = .moveTo(try META_MOVETO(dataStream: &dataStream))
-        case RecordType.META_OFFSETCLIPRGN.rawValue: // 0x0220
+        case RecordType.META_OFFSETCLIPRGN: // 0x0220
             self = .offsetClipRgn(try META_OFFSETCLIPRGN(dataStream: &dataStream))
-        case RecordType.META_FILLREGION.rawValue: // 0x0228
+        case RecordType.META_FILLREGION: // 0x0228
             self = .fillRegion(try META_FILLREGION(dataStream: &dataStream))
-        case RecordType.META_SETMAPPERFLAGS.rawValue: // 0x0231
+        case RecordType.META_SETMAPPERFLAGS: // 0x0231
             self = .setMapperFlags(try META_SETMAPPERFLAGS(dataStream: &dataStream))
-        case RecordType.META_SELECTPALETTE.rawValue: // 0x0234
+        case RecordType.META_SELECTPALETTE: // 0x0234
             self = .selectPalette(try META_SELECTPALETTE(dataStream: &dataStream))
-        case RecordType.META_CREATEPENINDIRECT.rawValue: // 0x02FA
+        case RecordType.META_CREATEPENINDIRECT: // 0x02FA
             self = .createPenIndirect(try META_CREATEPENINDIRECT(dataStream: &dataStream))
-        case RecordType.META_CREATEFONTINDIRECT.rawValue: // 0x02FA
+        case RecordType.META_CREATEFONTINDIRECT: // 0x02FA
             self = .createFontIndirect(try META_CREATEFONTINDIRECT(dataStream: &dataStream))
-        case RecordType.META_CREATEBRUSHINDIRECT.rawValue: // 0x02FC
+        case RecordType.META_CREATEBRUSHINDIRECT: // 0x02FC
             self = .createBrushIndirect(try META_CREATEBRUSHINDIRECT(dataStream: &dataStream))
-        case RecordType.META_POLYGON.rawValue: // 0x0324
+        case RecordType.META_POLYGON: // 0x0324
             self = .polygon(try META_POLYGON(dataStream: &dataStream))
-        case RecordType.META_POLYLINE.rawValue: // 0x0325
+        case RecordType.META_POLYLINE: // 0x0325
             self = .polyline(try META_POLYLINE(dataStream: &dataStream))
-        case RecordType.META_SCALEWINDOWEXT.rawValue: // 0x0410
+        case RecordType.META_SCALEWINDOWEXT: // 0x0410
             self = .scaleWindowExt(try META_SCALEWINDOWEXT(dataStream: &dataStream))
-        case RecordType.META_SCALEVIEWPORTEXT.rawValue: // 0x0412
+        case RecordType.META_SCALEVIEWPORTEXT: // 0x0412
             self = .scaleViewportExt(try META_SCALEVIEWPORTEXT(dataStream: &dataStream))
-        case RecordType.META_EXCLUDECLIPRECT.rawValue: // 0x0416
+        case RecordType.META_EXCLUDECLIPRECT: // 0x0416
             self = .excludeClipRect(try META_EXCLUDECLIPRECT(dataStream: &dataStream))
-        case RecordType.META_INTERSECTCLIPRECT.rawValue: // 0x0416
+        case RecordType.META_INTERSECTCLIPRECT: // 0x0416
             self = .intersectClipRect(try META_INTERSECTCLIPRECT(dataStream: &dataStream))
-        case RecordType.META_ELLIPSE.rawValue: // 0x0418
+        case RecordType.META_ELLIPSE: // 0x0418
             self = .ellipse(try META_ELLIPSE(dataStream: &dataStream))
-        case RecordType.META_FLOODFILL.rawValue: // 0x0419
+        case RecordType.META_FLOODFILL: // 0x0419
             self = .floodFill(try META_FLOODFILL(dataStream: &dataStream))
-        case RecordType.META_RECTANGLE.rawValue: // 0x041B
+        case RecordType.META_RECTANGLE: // 0x041B
             self = .rectangle(try META_RECTANGLE(dataStream: &dataStream))
-        case RecordType.META_SETPIXEL.rawValue: // 0x041F
+        case RecordType.META_SETPIXEL: // 0x041F
             self = .setPixel(try META_SETPIXEL(dataStream: &dataStream))
-        case RecordType.META_FRAMEREGION.rawValue: // 0x0429
+        case RecordType.META_FRAMEREGION: // 0x0429
             self = .frameRegion(try META_FRAMEREGION(dataStream: &dataStream))
-        case RecordType.META_ANIMATEPALETTE.rawValue: // 0x0436
+        case RecordType.META_ANIMATEPALETTE: // 0x0436
             self = .animatePalette(try META_ANIMATEPALETTE(dataStream: &dataStream))
-        case RecordType.META_TEXTOUT.rawValue: // 0x0521
+        case RecordType.META_TEXTOUT: // 0x0521
             self = .textOut(try META_TEXTOUT(dataStream: &dataStream))
-        case RecordType.META_POLYPOLYGON.rawValue: // 0x0538
+        case RecordType.META_POLYPOLYGON: // 0x0538
             self = .polyPolygon(try META_POLYPOLYGON(dataStream: &dataStream))
-        case RecordType.META_EXTFLOODFILL.rawValue: // 0x0548
+        case RecordType.META_EXTFLOODFILL: // 0x0548
             self = .extFloodFill(try META_EXTFLOODFILL(dataStream: &dataStream))
-        case RecordType.META_ROUNDRECT.rawValue: // 0x061C
+        case RecordType.META_ROUNDRECT: // 0x061C
             self = .roundRect(try META_ROUNDRECT(dataStream: &dataStream))
-        case RecordType.META_PATBLT.rawValue: // 0x061D
+        case RecordType.META_PATBLT: // 0x061D
             self = .patBlt(try META_PATBLT(dataStream: &dataStream))
-        case RecordType.META_ESCAPE.rawValue: // 0x0626
+        case RecordType.META_ESCAPE: // 0x0626
             self = .escape(try META_ESCAPE(dataStream: &dataStream))
-        case RecordType.META_CREATEREGION.rawValue: // 0x06FF
+        case RecordType.META_CREATEREGION: // 0x06FF
             self = .createRegion(try META_CREATEREGION(dataStream: &dataStream))
-        case RecordType.META_ARC.rawValue: // 0x0817
+        case RecordType.META_ARC: // 0x0817
             self = .arc(try META_ARC(dataStream: &dataStream))
-        case RecordType.META_PIE.rawValue: // 0x081A
+        case RecordType.META_PIE: // 0x081A
             self = .pie(try META_PIE(dataStream: &dataStream))
-        case RecordType.META_CHORD.rawValue: // 0x0830
+        case RecordType.META_CHORD: // 0x0830
             self = .chord(try META_CHORD(dataStream: &dataStream))
-        case RecordType.META_BITBLT.rawValue: // 0x0922
+        case RecordType.META_BITBLT: // 0x0922
             self = .bitBlt(try META_BITBLT(dataStream: &dataStream))
-        case RecordType.META_DIBBITBLT.rawValue: // 0x0940
+        case RecordType.META_DIBBITBLT: // 0x0940
             self = .dibBitBlt(try META_DIBBITBLT(dataStream: &dataStream))
-        case RecordType.META_EXTTEXTOUT.rawValue: // 0x0A32
+        case RecordType.META_EXTTEXTOUT: // 0x0A32
             self = .extTextOut(try META_EXTTEXTOUT(dataStream: &dataStream))
-        case RecordType.META_STRETCHBLT.rawValue: // 0x0B41
+        case RecordType.META_STRETCHBLT: // 0x0B41
             self = .stretchBlt(try META_STRETCHBLT(dataStream: &dataStream))
-        case RecordType.META_DIBSTRETCHBLT.rawValue: // 0x0B41
+        case RecordType.META_DIBSTRETCHBLT: // 0x0B41
             self = .dibStretchBlt(try META_DIBSTRETCHBLT(dataStream: &dataStream))
-        case RecordType.META_SETDIBTODEV.rawValue: // 0x0D33
+        case RecordType.META_SETDIBTODEV: // 0x0D33
             self = .setDibToDev(try META_SETDIBTODEV(dataStream: &dataStream))
-        case RecordType.META_STRETCHDIB.rawValue: // 0x0F43
+        case RecordType.META_STRETCHDIB: // 0x0F43
             self = .stretchDib(try META_STRETCHDIB(dataStream: &dataStream))
-        case RecordType.META_EOF.rawValue:
+        case RecordType.META_EOF:
             self = .eof(try META_EOF(dataStream: &dataStream))
-        default:
-            fatalError("NYI: \(recordFunction.hexString)")
         }
     }
 }
