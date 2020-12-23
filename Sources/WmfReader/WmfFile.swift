@@ -41,6 +41,12 @@ public struct WmfFile {
         try self.init(dataStream: &dataStream)
     }
     
+    public init(placeable: META_PLACEABLE, dataStream: inout DataStream) throws {
+        self.placeable = placeable
+        self.header = try META_HEADER(dataStream: &dataStream)
+        self.data = DataStream(slicing: dataStream, startIndex: dataStream.position, count: dataStream.remainingCount)
+    }
+    
     public init(dataStream: inout DataStream) throws {
         if try dataStream.peek(endianess: .littleEndian) as UInt32 == 0x9AC6CDD7 {
             self.placeable = try META_PLACEABLE(dataStream: &dataStream)
