@@ -4,6 +4,14 @@ import XCTest
 final class DumpFileTests: XCTestCase {
     func testDumpWmf() throws {
         for (name, fileExtension) in [
+            ("bs00369", "wmf"),
+            ("globe", "wmf"),
+            ("j0174133", "wmf"),
+            ("j0174137", "wmf"),
+            ("j0174139", "wmf"),
+            ("logo", "wmf"),
+            ("magnify", "wmf"),
+            ("tigernph", "wmf"),
             ("CreateWMFMetaFileImage", "wmf"),
             ("File", "wmf"),
             ("input", "wmf"),
